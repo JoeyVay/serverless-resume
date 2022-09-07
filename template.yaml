@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  serverless-resume-api
+
+  Sample SAM Template for serverless-resume-api
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  GetResumeContentFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: get_resume_content/
+      Handler: get_resume_content.lambda_handler
+      Runtime: python3.8
+      Policies:
+        - Statement:
+          - Sid: VisualEditor0
+            Effect: Allow
+            Action: s3:GetObject
+            Resource: arn:aws:s3:::joevay.backpack/json_resume_template.json
+      Architectures:
+        - x86_64
+      Events:
+        Resume:
+          Type: Api 
+          Properties:
+            Path: /resume/json
+            Method: get
+
+Outputs:
+  ServerlessResumeApi:
+    Description: "API Gateway endpoint URL for Prod stage for Serverless Resume API function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  GetResumeContentFunction:
+    Description: "Serverless Resume API Lambda Function ARN"
+    Value: !GetAtt GetResumeContentFunction.Arn
+  GetResumeContentFunctionIamRole:
+    Description: "Implicit IAM Role created for Serverless Resume API function"
+    Value: !GetAtt GetResumeContentFunctionRole.Arn
