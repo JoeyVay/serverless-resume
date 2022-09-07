@@ -1,5 +1,5 @@
 # Serverless Resume API
-SAM app that uses AWS to host a personal JOSN resume API.
+This is small appliction made using the AWS Serverless Application Model (SAM) to deply and run a serverless API to deliver my personal JOSN resume. 
 
 ## Need to Know:
 ### /template.yaml
