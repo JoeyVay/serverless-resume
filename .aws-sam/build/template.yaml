@@ -1,22 +1,73 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-<<<<<<< HEAD
 Globals:
   Function:
     Timeout: 3
 Description: serverless-resume project for Joe Vay. This will deploy all theh infostructure,
   code, and assets needed to host joevay.com and it's APIs
-=======
-Description: 'serverless-resume-api
-
-  Sample SAM Template for serverless-resume-api
-
-  '
-Globals:
-  Function:
-    Timeout: 3
->>>>>>> 8bd3c3ae5895d92cf1680604df338f6457667c8a
 Resources:
+  ServerlessResumeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: serverless-resume-site-bucket-joevay
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+  ServerlessResumeBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: ServerlessResumeBucketPolicy
+        Version: 2012-10-17
+        Statement:
+        - Sid: PublicReadForGetBucketObjects
+          Effect: Allow
+          Principal: '*'
+          Action: s3:GetObject
+          Resource:
+            Fn::Join:
+            - ''
+            - - 'arn:aws:s3:::'
+              - Ref: ServerlessResumeBucket
+              - /*
+      Bucket:
+        Ref: ServerlessResumeBucket
+  ServerlessResumeDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: Distribution for Serverless Resume site
+        PriceClass: PriceClass_All
+        DefaultCacheBehavior:
+          ViewerProtocolPolicy: allow-all
+          TargetOriginId: serverless-resume-site-bucket-joevay.s3-website-us-east-1.amazonaws.com
+          DefaultTTL: 10
+          MinTTL: 0
+          MaxTTL: 30
+          ForwardedValues:
+            QueryString: false
+        Origins:
+        - DomainName: serverless-resume-site-bucket-joevay.s3-website-us-east-1.amazonaws.com
+          Id: serverless-resume-site-bucket-joevay.s3-website-us-east-1.amazonaws.com
+          CustomOriginConfig:
+            OriginProtocolPolicy: match-viewer
+        Enabled: 'true'
+        DefaultRootObject: index.html
+  ServerlessResumeRecordSetGroup:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      Comment: record set group for joeyvay.com deployed by serverless resume site
+        project
+      HostedZoneName: joevay.com.
+      RecordSets:
+      - Name: joevay.com.
+        Type: A
+        AliasTarget:
+          DNSName:
+            Fn::GetAtt:
+            - ServerlessResumeDistribution
+            - DomainName
+          HostedZoneId: Z2FDTNDATAQYW2
   GetResumeContentFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -39,54 +90,6 @@ Resources:
             Method: get
     Metadata:
       SamResourceId: GetResumeContentFunction
-<<<<<<< HEAD
-  ServerlessResumeBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: serverless-resume-site-bucket-joevay
-      AccessControl: PublicRead
-      WebsiteConfiguration:
-        IndexDocument: index.html
-  ServerlessResumeBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      PolicyDocument:
-        Id: ServerlessResumeBucketPolicy
-=======
-  ResumeWebsiteBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: joevay-serverless-resume-site
-      AccessControl: PublicRead
-      WebsiteConfiguration:
-        IndexDocument: index.html
-  BucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      PolicyDocument:
-        Id: ResumeWebsiteBucketPolicy
->>>>>>> 8bd3c3ae5895d92cf1680604df338f6457667c8a
-        Version: 2012-10-17
-        Statement:
-        - Sid: PublicReadForGetBucketObjects
-          Effect: Allow
-          Principal: '*'
-          Action: s3:GetObject
-          Resource:
-            Fn::Join:
-            - ''
-            - - 'arn:aws:s3:::'
-<<<<<<< HEAD
-              - Ref: ServerlessResumeBucket
-              - /*
-      Bucket:
-        Ref: ServerlessResumeBucket
-=======
-              - Ref: ResumeWebsiteBucket
-              - /*
-      Bucket:
-        Ref: ResumeWebsiteBucket
->>>>>>> 8bd3c3ae5895d92cf1680604df338f6457667c8a
 Outputs:
   ServerlessResumeApi:
     Description: API Gateway endpoint URL for Prod stage for Serverless Resume API
