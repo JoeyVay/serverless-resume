@@ -1,13 +1,27 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
-Description: >
-  serverless-resume-api
+AWSTemplateFormatVersion: 
+  '2010-09-09'
 
-  Sample SAM Template for serverless-resume-api
+Transform: 
+  AWS::Serverless-2016-10-31
 
 Globals:
   Function:
     Timeout: 3
+    
+Description:
+  serverless-resume project for Joe Vay. This will deploy all theh infostructure, code, and assets needed to host joevay.com and it's APIs
+
+#Metadata:
+  #optional - Objects that provide additional information about the template.
+
+#Parameters:
+  #optional - Values to pass to your template at runtime (when you create or update a stack). You can refer to parameters from the Resources and Outputs sections of the template.
+
+#Mappings:
+  #optional - A mapping of keys and associated values that you can use to specify conditional parameter values, similar to a lookup table. You can match a key to a corresponding value by using the Fn::FindInMap intrinsic function in the Resources and Outputs sections.
+
+#Conditions:
+  #optional - Conditions that control whether certain resources are created or whether certain resource properties are assigned a value during stack creation or update. For example, you could conditionally create a resource that depends on whether the stack is for a production or test environment.
 
 Resources:
   GetResumeContentFunction:
@@ -30,6 +44,32 @@ Resources:
           Properties:
             Path: /resume/json
             Method: get
+
+  ServerlessResumeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: serverless-resume-site-bucket-joevay
+      AccessControl: PublicRead
+      WebsiteConfiguration: 
+        IndexDocument: index.html
+
+  ServerlessResumeBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: ServerlessResumeBucketPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: "*"
+            Action: "s3:GetObject"
+            Resource: !Join
+              - ""
+              - - "arn:aws:s3:::"
+                - !Ref ServerlessResumeBucket
+                - /*
+      Bucket: !Ref ServerlessResumeBucket
 
 Outputs:
   ServerlessResumeApi:
