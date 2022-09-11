@@ -1,10 +1,21 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+<<<<<<< HEAD
 Globals:
   Function:
     Timeout: 3
 Description: serverless-resume project for Joe Vay. This will deploy all theh infostructure,
   code, and assets needed to host joevay.com and it's APIs
+=======
+Description: 'serverless-resume-api
+
+  Sample SAM Template for serverless-resume-api
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+>>>>>>> 8bd3c3ae5895d92cf1680604df338f6457667c8a
 Resources:
   GetResumeContentFunction:
     Type: AWS::Serverless::Function
@@ -28,6 +39,7 @@ Resources:
             Method: get
     Metadata:
       SamResourceId: GetResumeContentFunction
+<<<<<<< HEAD
   ServerlessResumeBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -40,6 +52,20 @@ Resources:
     Properties:
       PolicyDocument:
         Id: ServerlessResumeBucketPolicy
+=======
+  ResumeWebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: joevay-serverless-resume-site
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: ResumeWebsiteBucketPolicy
+>>>>>>> 8bd3c3ae5895d92cf1680604df338f6457667c8a
         Version: 2012-10-17
         Statement:
         - Sid: PublicReadForGetBucketObjects
@@ -50,10 +76,17 @@ Resources:
             Fn::Join:
             - ''
             - - 'arn:aws:s3:::'
+<<<<<<< HEAD
               - Ref: ServerlessResumeBucket
               - /*
       Bucket:
         Ref: ServerlessResumeBucket
+=======
+              - Ref: ResumeWebsiteBucket
+              - /*
+      Bucket:
+        Ref: ResumeWebsiteBucket
+>>>>>>> 8bd3c3ae5895d92cf1680604df338f6457667c8a
 Outputs:
   ServerlessResumeApi:
     Description: API Gateway endpoint URL for Prod stage for Serverless Resume API
