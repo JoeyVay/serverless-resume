@@ -7,4 +7,4 @@ deploy-infra:
 	sam deploy
 
 deploy-site:
-	aws s3 sync ./resume-site s3://joevay-serverless-resume-site
+	aws s3 sync ./resume-site s3://serverless-resume-site-bucket-joevay

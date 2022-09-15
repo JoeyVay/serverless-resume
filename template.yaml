@@ -24,7 +24,6 @@ Description:
   #optional - Conditions that control whether certain resources are created or whether certain resource properties are assigned a value during stack creation or update. For example, you could conditionally create a resource that depends on whether the stack is for a production or test environment.
 
 Resources:
-
   ServerlessResumeBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -50,35 +49,47 @@ Resources:
                 - !Ref ServerlessResumeBucket
                 - /*
       Bucket: !Ref ServerlessResumeBucket
-  
+
   ServerlessResumeDistribution:
     Type: "AWS::CloudFront::Distribution"
     Properties:
       DistributionConfig:
+        Aliases: joevay.com
         Comment: Distribution for Serverless Resume site
         PriceClass: PriceClass_All
         DefaultCacheBehavior:
           ViewerProtocolPolicy: allow-all
-          TargetOriginId: serverless-resume-site-bucket-joevay.s3-website-us-east-1.amazonaws.com
+          TargetOriginId: serverless-resume-site-bucket-joevay.s3.us-east-1.amazonaws.com   #should this be hard coded?
           DefaultTTL: 10
           MinTTL: 0
           MaxTTL: 30
           ForwardedValues:
             QueryString: false
         Origins:
-          - DomainName: serverless-resume-site-bucket-joevay.s3-website-us-east-1.amazonaws.com
-            Id: serverless-resume-site-bucket-joevay.s3-website-us-east-1.amazonaws.com
+          - DomainName: serverless-resume-site-bucket-joevay.s3.us-east-1.amazonaws.com    #should this be hard coded?
+            Id: serverless-resume-site-bucket-joevay.s3.us-east-1.amazonaws.com      #should this be hard coded?
             CustomOriginConfig:
               OriginProtocolPolicy: match-viewer
         Enabled: "true"
         DefaultRootObject: index.html
+  
+  ServerlessResumeCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: joevay.com #TODO: Don't hardcode me??
+      DomainValidationOptions:
+        - DomainName: joevay.com
+          HostedZoneId: Z09001641DYZ6HJ2YF0G1 #dont hard code me
+      SubjectAlternativeNames:
+        - "*.joevay.com"
+      ValidationMethod: DNS
 
-  # ServerlessResumeHostedZone: 
-  #  Type: "AWS::Route53::HostedZone"
-  #  Properties: 
-  #    HostedZoneConfig: 
-  #      Comment: Hosted Zone for joevay.com deployed by Serverless Resume project
-  #    Name: joevay.com
+  ServerlessResumeHostedZone: 
+    Type: "AWS::Route53::HostedZone"
+    Properties: 
+      HostedZoneConfig: 
+        Comment: Hosted Zone for joevay.com deployed by Serverless Resume project
+      Name: joevay.com
 
   ServerlessResumeRecordSetGroup:
     Type: AWS::Route53::RecordSetGroup
@@ -91,6 +102,31 @@ Resources:
           AliasTarget:
                DNSName: !GetAtt ServerlessResumeDistribution.DomainName #joevay.com
                HostedZoneId: Z2FDTNDATAQYW2 #same value for CF distribuiton << can we pull by fef tho?
+              
+        - Name: joevay.com.
+          Type: AAAA
+          AliasTarget:
+            DNSName: !GetAtt ServerlessResumeDistribution.DomainName #joevay.com
+            HostedZoneId: Z2FDTNDATAQYW2 #same value for CF distribuiton << can we pull by fef tho?
+
+        - Name: www.joevay.com.
+          Type: A
+          AliasTarget:
+            DNSName: !GetAtt ServerlessResumeDistribution.DomainName #joevay.com
+            HostedZoneId: Z2FDTNDATAQYW2 #same value for CF distribuiton << can we pull by fef tho?
+    
+        - Name: www.joevay.com.
+          Type: AAAA
+          AliasTarget:
+            DNSName: !GetAtt ServerlessResumeDistribution.DomainName #joevay.com
+            HostedZoneId: Z2FDTNDATAQYW2 #same value for CF distribuiton << can we pull by fef tho?
+
+        - Name: resume.joevay.com.
+          Type: AAAA
+          AliasTarget:
+            DNSName: !GetAtt ServerlessResumeDistribution.DomainName #joevay.com
+            HostedZoneId: Z2FDTNDATAQYW2 #same value for CF distribuiton << can we pull by fef tho?
+
 
   GetResumeContentFunction:
     Type: AWS::Serverless::Function 
