@@ -34,6 +34,20 @@
 					"payload": {},
 					"environmentVariables": {}
 				}
+			},
+			{
+				"type": "aws-sam",
+				"request": "direct-invoke",
+				"name": "serverless-resume:GetResumeContentFunction",
+				"invokeTarget": {
+					"target": "template",
+					"templatePath": "${workspaceFolder}/template.yaml",
+					"logicalId": "GetResumeContentFunction"
+				},
+				"lambda": {
+					"payload": {},
+					"environmentVariables": {}
+				}
 			}
 		]
 	}

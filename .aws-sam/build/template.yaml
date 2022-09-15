@@ -36,7 +36,9 @@ Resources:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
-        Aliases: joevay.com
+        Aliases:
+        - joevay.com
+        - www.joevay.com
         Comment: Distribution for Serverless Resume site
         PriceClass: PriceClass_All
         DefaultCacheBehavior:
@@ -54,6 +56,12 @@ Resources:
             OriginProtocolPolicy: match-viewer
         Enabled: 'true'
         DefaultRootObject: index.html
+        HttpVersion: http2and3
+        ViewerCertificate:
+          AcmCertificateArn:
+            Ref: ServerlessResumeCertificate
+          MinimumProtocolVersion: TLSv1.2_2021
+          SslSupportMethod: sni-only
   ServerlessResumeCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
