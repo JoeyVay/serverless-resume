@@ -12,11 +12,13 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<script>
-			fetch('https://ax5xbg2mnk.execute-api.us-east-1.amazonaws.com/Prod/site/getViewCount')
+			fetch('https://ax5xbg2mnk.execute-api.us-east-1.amazonaws.com/Prod/site/getViewCount') <!-- dont hard code-->
 				.then(response => response.json())
 				.then((data) => {
 					document.getElementById('replaceme').innerText = data.count
 				})
+			fetch('https://ax5xbg2mnk.execute-api.us-east-1.amazonaws.com/Prod/site/putViewCount')  <!-- dont hard code-->
+
 		</script>
 	</head>
 	<body class="is-preload">
