@@ -10,6 +10,37 @@
 			{
 				"type": "aws-sam",
 				"request": "direct-invoke",
+				"name": "API serverless-resume:GetResumeContentFunction",
+				"invokeTarget": {
+					"target": "api",
+					"templatePath": "${workspaceFolder}/template.yaml",
+					"logicalId": "GetResumeContentFunction"
+				},
+				"api": {
+					"path": "/",
+					"httpMethod": "get",
+					"payload": {
+						"json": {}
+					}
+				}
+			},
+			{
+				"type": "aws-sam",
+				"request": "direct-invoke",
+				"name": "serverless-resume:GetResumeContentFunction",
+				"invokeTarget": {
+					"target": "template",
+					"templatePath": "${workspaceFolder}/template.yaml",
+					"logicalId": "GetResumeContentFunction"
+				},
+				"lambda": {
+					"payload": {},
+					"environmentVariables": {}
+				}
+			},
+			{
+				"type": "aws-sam",
+				"request": "direct-invoke",
 				"name": "serverless-resume:GetResumeContentFunction",
 				"invokeTarget": {
 					"target": "template",

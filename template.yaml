@@ -14,8 +14,24 @@ Description:
 #Metadata:
   #optional - Objects that provide additional information about the template.
 
-#Parameters:
+Parameters:
   #optional - Values to pass to your template at runtime (when you create or update a stack). You can refer to parameters from the Resources and Outputs sections of the template.
+Parameters:
+  #optional - Values to pass to your template at runtime (when you create or update a stack). You can refer to parameters from the Resources and Outputs sections of the template.
+  HostedZoneParameter:
+    Type: String
+    Description: The hosted zone for the Route53 records
+    Default: joevay.com.
+
+  DomainNameParameter:
+    Type: String
+    Description: The domain name of the site
+    Default: joevay.com
+
+  ApiSubDomainNameParameter:
+    Type: String
+    Description: The subdomain of to be used by API Gateway
+    Default: api.
 
 #Mappings:
   #optional - A mapping of keys and associated values that you can use to specify conditional parameter values, similar to a lookup table. You can match a key to a corresponding value by using the Fn::FindInMap intrinsic function in the Resources and Outputs sections.
@@ -51,7 +67,7 @@ Resources:
       Bucket: !Ref ServerlessResumeBucket
 
   ServerlessResumeDistribution:
-    Type: "AWS::CloudFront::Distribution"
+    Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Aliases: 
@@ -156,6 +172,55 @@ Resources:
             Path: /resume/json
             Method: get
 
+  GetSiteViewCountFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: joevaycom-site-count
+      CodeUri: get_site_view_count/
+      Handler: get_site_view_count.lambda_handler
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        Resume:
+          Type: Api 
+          Properties:
+            Path: /site/getViewCount
+            Method: get
+
+  PutSiteViewCountFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: joevaycom-site-count
+      CodeUri: put_site_view_count/
+      Handler: put_site_view_count.lambda_handler
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        Resume:
+          Type: Api 
+          Properties:
+            Path: /site/putViewCount
+            Method: GET
+
+  SiteCountDynamoDbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: joevaycom-site-count
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: 
+        - AttributeName: "ID"
+          AttributeType: "S"
+      KeySchema: 
+        - AttributeName: "ID"
+          KeyType: "HASH"
+
+
 Outputs:
   ServerlessResumeApi:
     Description: "API Gateway endpoint URL for Prod stage for Serverless Resume API function"
@@ -163,6 +228,9 @@ Outputs:
   GetResumeContentFunction:
     Description: "Serverless Resume API Lambda Function ARN"
     Value: !GetAtt GetResumeContentFunction.Arn
+  GetSiteViewCountFunction:
+    Description: "Get SiteView Count Lambda Function ARN"
+    Value: !GetAtt GetSiteViewCountFunction.Arn
   GetResumeContentFunctionIamRole:
     Description: "Implicit IAM Role created for Serverless Resume API function"
     Value: !GetAtt GetResumeContentFunctionRole.Arn

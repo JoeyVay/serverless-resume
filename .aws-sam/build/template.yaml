@@ -5,6 +5,19 @@ Globals:
     Timeout: 3
 Description: serverless-resume project for Joe Vay. This will deploy all theh infostructure,
   code, and assets needed to host joevay.com and it's APIs
+Parameters:
+  HostedZoneParameter:
+    Type: String
+    Description: The hosted zone for the Route53 records
+    Default: joevay.com.
+  DomainNameParameter:
+    Type: String
+    Description: The domain name of the site
+    Default: joevay.com
+  ApiSubDomainNameParameter:
+    Type: String
+    Description: The subdomain of to be used by API Gateway
+    Default: api.
 Resources:
   ServerlessResumeBucket:
     Type: AWS::S3::Bucket
@@ -147,6 +160,55 @@ Resources:
             Method: get
     Metadata:
       SamResourceId: GetResumeContentFunction
+  GetSiteViewCountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName: joevaycom-site-count
+      CodeUri: GetSiteViewCountFunction
+      Handler: get_site_view_count.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Resume:
+          Type: Api
+          Properties:
+            Path: /site/getViewCount
+            Method: get
+    Metadata:
+      SamResourceId: GetSiteViewCountFunction
+  PutSiteViewCountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: joevaycom-site-count
+      CodeUri: PutSiteViewCountFunction
+      Handler: put_site_view_count.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Resume:
+          Type: Api
+          Properties:
+            Path: /site/putViewCount
+            Method: GET
+    Metadata:
+      SamResourceId: PutSiteViewCountFunction
+  SiteCountDynamoDbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: joevaycom-site-count
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: ID
+        AttributeType: S
+      KeySchema:
+      - AttributeName: ID
+        KeyType: HASH
 Outputs:
   ServerlessResumeApi:
     Description: API Gateway endpoint URL for Prod stage for Serverless Resume API
@@ -158,6 +220,12 @@ Outputs:
     Value:
       Fn::GetAtt:
       - GetResumeContentFunction
+      - Arn
+  GetSiteViewCountFunction:
+    Description: Get SiteView Count Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - GetSiteViewCountFunction
       - Arn
   GetResumeContentFunctionIamRole:
     Description: Implicit IAM Role created for Serverless Resume API function

@@ -9,3 +9,6 @@ SAM app that uses AWS to host a personal JOSN resume API.
 ## Endpoints:
 ### /resume/json
 - returns the resume in a JSON format
+
+Notes:
+- As I do not use Route 53 as a registrar, if the Hosted Zone holding my DNS records is blown away and recreated then I will need to go to NameCheep andter my enter the new nameservers created. 
