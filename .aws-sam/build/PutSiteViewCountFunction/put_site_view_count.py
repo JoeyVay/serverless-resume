@@ -3,6 +3,8 @@ dynamodb = boto3.resource('dynamodb', region_name= 'us-east-1')
 table = dynamodb.Table('joevaycom-site-count')
 
 def lambda_handler(event,context):
+
+    #update count
     response = table.update_item(TableName='joevaycom-site-count', Key={'ID': 'visitors'},
         ExpressionAttributeNames = {'#count': 'count'},
         ExpressionAttributeValues = {':increase': 1,},
@@ -11,7 +13,9 @@ def lambda_handler(event,context):
         ReturnValues = 'UPDATED_NEW'
     )
 
+    #store new count
     current_visitor_count = (response['Attributes']['count'])
+)
 
     return {
         "statusCode" : 200,
