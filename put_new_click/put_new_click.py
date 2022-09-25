@@ -1,4 +1,7 @@
 import boto3
+import datetime 
+from datetime import datetime
+
 dynamodb = boto3.resource('dynamodb', region_name= 'us-east-1')
 table = dynamodb.Table('joevaycom-site-count')
 
@@ -15,7 +18,29 @@ def lambda_handler(event,context):
 
     #store new count
     current_visitor_count = (response['Attributes']['count'])
-)
+
+    ######from youtube as client#
+    tablen='joevaycom-site-count'
+    item={
+        'ID': {
+            'S' : datetime.utcnow().isoformat()
+        },
+        'username': {
+                'S':'joevay'
+        },
+        'timestamp': {
+                'S': 'datetime.utcnow().isoformat()'
+            }  
+        }
+
+    dynamodb.put_item(TableName=tablen, Item=item)
+
+
+    response =dynamodb.put_item(
+            TableName='joevaycom-site-count'
+    )
+    ########################
+
 
     return {
         "statusCode" : 200,
