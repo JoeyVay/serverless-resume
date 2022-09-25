@@ -9,8 +9,8 @@ deploy-infra:
 deploy-site:
 	aws s3 sync ./resume-site s3://serverless-resume-site-bucket-joevay
 
-invoke-get-view-count:
-	sam build && sam local invoke GetSiteViewCountFunction
+invoke-get-button-count:
+	sam build && sam local invoke GetButtonCountFunction
 
-invoke-put-view-count:
-	sam build && sam local invoke PutSiteViewCountFunction
+invoke-put-button-count:
+	sam build && sam local invoke PutButtonCountFunction

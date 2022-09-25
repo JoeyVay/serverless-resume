@@ -1,1 +1,3 @@
 .aws-sam/
+samconfig.toml
+serverless-resume.code-workspace

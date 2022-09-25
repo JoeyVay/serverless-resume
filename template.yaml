@@ -172,14 +172,14 @@ Resources:
             Path: /resume/json
             Method: get
 
-  GetSiteViewCountFunction:
+  GetButtonCountFunction:
     Type: AWS::Serverless::Function 
     Properties:
       Policies:
         - DynamoDBReadPolicy:
-            TableName: joevaycom-site-count
-      CodeUri: get_site_view_count/
-      Handler: get_site_view_count.lambda_handler
+            TableName: joevaycom-site-count #< dont hard code me?
+      CodeUri: get_button_count/
+      Handler: get_button_count.return_count
       Runtime: python3.8
       Architectures:
         - x86_64
@@ -187,7 +187,7 @@ Resources:
         Resume:
           Type: Api 
           Properties:
-            Path: /site/getViewCount
+            Path: /site/getButtonCount
             Method: get
 
   PutButtonCountFunction:
@@ -205,7 +205,25 @@ Resources:
         Resume:
           Type: Api 
           Properties:
-            Path: /site/put_button_count
+            Path: /site/PutButtonCount
+            Method: GET
+
+  PutButtonPressRecordFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: joevaycom-site-count
+      CodeUri: put_press_record/
+      Handler: put_press_record.create_press_record
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        Resume:
+          Type: Api 
+          Properties:
+            Path: /site/PutPressRecord
             Method: GET
 
   SiteCountDynamoDbTable:
@@ -222,17 +240,21 @@ Resources:
 
 
 Outputs:
+#The optional Outputs section declares output values that you can import into other stacks
   ServerlessResumeApi:
     Description: "API Gateway endpoint URL for Prod stage for Serverless Resume API function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   GetResumeContentFunction:
-    Description: "Serverless Resume API Lambda Function ARN"
+    Description: "ARN of Lambda Function: GetResumeContentFunction"
     Value: !GetAtt GetResumeContentFunction.Arn
-  GetSiteViewCountFunction:
-    Description: "Get SiteView Count Lambda Function ARN"
-    Value: !GetAtt GetSiteViewCountFunction.Arn
+  GetButtonCountFunction:
+    Description: "ARN of Lambda Function: GetButtonCountFunction"
+    Value: !GetAtt GetButtonCountFunction.Arn
+  PutButtonPressRecordFunction:
+    Description: "ARN of Lambda Function: PutButtonPressRecordFunction"
+    Value: !GetAtt PutButtonPressRecordFunction.Arn
   PutButtonCountFunction:
-    Description: "Get PutButtonCountFunction ARN"
+    Description: "ARN of Lambda Function: PutButtonCountFunction"
     Value: !GetAtt PutButtonCountFunction.Arn
   GetResumeContentFunctionIamRole:
     Description: "Implicit IAM Role created for Serverless Resume API function"

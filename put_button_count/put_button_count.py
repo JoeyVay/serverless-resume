@@ -25,5 +25,5 @@ def increment_count(event,context):
 			"Access-Control-Allow-Credentials": "*",    #<<<tighten all of these CORS policies
 			"Content-Type": "application/json"
 		},
-		"body": "stored value: " + str(current_count)
+		"body": "{ \"count\": \"" + str(current_count) + "\" }"
     }

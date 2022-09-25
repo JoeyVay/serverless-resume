@@ -10,7 +10,7 @@ visitor_count_dynamodb_client = boto3.client('dynamodb')
 #set key to retrive
 current_visitor_count_get = {'ID':{'S':'visitors'}}
 
-def lambda_handler(event,context):
+def return_count(event,context):
     
     #request current count of viewers from db
     response = visitor_count_dynamodb_client.get_item(TableName = table_name, Key = current_visitor_count_get)
