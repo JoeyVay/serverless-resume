@@ -190,14 +190,14 @@ Resources:
             Path: /site/getViewCount
             Method: get
 
-  PutSiteViewCountFunction:
+  PutButtonCountFunction:
     Type: AWS::Serverless::Function 
     Properties:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: joevaycom-site-count
-      CodeUri: put_site_view_count/
-      Handler: put_site_view_count.lambda_handler
+      CodeUri: put_button_count/
+      Handler: put_button_count.increment_count
       Runtime: python3.8
       Architectures:
         - x86_64
@@ -205,7 +205,7 @@ Resources:
         Resume:
           Type: Api 
           Properties:
-            Path: /site/putViewCount
+            Path: /site/put_button_count
             Method: GET
 
   SiteCountDynamoDbTable:
@@ -231,6 +231,9 @@ Outputs:
   GetSiteViewCountFunction:
     Description: "Get SiteView Count Lambda Function ARN"
     Value: !GetAtt GetSiteViewCountFunction.Arn
+  PutButtonCountFunction:
+    Description: "Get PutButtonCountFunction ARN"
+    Value: !GetAtt PutButtonCountFunction.Arn
   GetResumeContentFunctionIamRole:
     Description: "Implicit IAM Role created for Serverless Resume API function"
     Value: !GetAtt GetResumeContentFunctionRole.Arn
