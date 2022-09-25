@@ -2,13 +2,13 @@ import json
 import boto3
 
 #set table name
-table_name = 'joevaycom-site-count'
+table_name = 'joevay-button-press-count'
 
 #make DynamoDB client
 visitor_count_dynamodb_client = boto3.client('dynamodb')
 
 #set key to retrive
-current_visitor_count_get = {'ID':{'S':'visitors'}}
+current_visitor_count_get = {'id':{'S':'presses'}}
 
 def return_count(event,context):
     

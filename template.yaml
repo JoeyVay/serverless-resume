@@ -177,7 +177,7 @@ Resources:
     Properties:
       Policies:
         - DynamoDBReadPolicy:
-            TableName: joevaycom-site-count #< dont hard code me?
+            TableName: joevay-button-press-count #< dont hard code me?
       CodeUri: get_button_count/
       Handler: get_button_count.return_count
       Runtime: python3.8
@@ -195,7 +195,7 @@ Resources:
     Properties:
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: joevaycom-site-count
+            TableName: joevay-button-press-count
       CodeUri: put_button_count/
       Handler: put_button_count.increment_count
       Runtime: python3.8
@@ -213,7 +213,7 @@ Resources:
     Properties:
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: joevaycom-site-count
+            TableName: joevay-button-press-count
       CodeUri: put_press_record/
       Handler: put_press_record.create_press_record
       Runtime: python3.8
@@ -226,16 +226,28 @@ Resources:
             Path: /site/PutPressRecord
             Method: GET
 
-  SiteCountDynamoDbTable:
+  ButtonPressCountDbTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: joevaycom-site-count
+      TableName: joevay-button-press-count
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions: 
-        - AttributeName: "ID"
+        - AttributeName: "id"
           AttributeType: "S"
       KeySchema: 
-        - AttributeName: "ID"
+        - AttributeName: "id"
+          KeyType: "HASH"
+
+  ButtonPressRecordDynamoDbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: joevay-button-press-record
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: 
+        - AttributeName: "id"
+          AttributeType: "S"
+      KeySchema: 
+        - AttributeName: "id"
           KeyType: "HASH"
 
 

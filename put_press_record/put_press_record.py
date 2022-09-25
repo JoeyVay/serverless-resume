@@ -5,11 +5,12 @@ import datetime
 from datetime import datetime
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('joevaycom-site-count')
+table = dynamodb.Table('joevay-button-press-record')  #<< dont har dcode me???
 
 def create_press_record(event,context):
+
 	item={
-			'ID': uuid.uuid4().hex,    #<<< chnage var name to new key
+			'id': uuid.uuid4().hex,
 			'timestamp': datetime.utcnow().isoformat(),
 			'source': 'https://joevay.com/SiteCount.html'
 			#'note': 'This is the start of a new era for the button project!'

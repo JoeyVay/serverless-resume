@@ -1,8 +1,8 @@
 import boto3
 
 dynamodb = boto3.resource('dynamodb', region_name= 'us-east-1')
-table = dynamodb.Table('joevaycom-site-count')
-key = {'ID': 'visitors'}
+table = dynamodb.Table('joevay-button-press-count')
+key = {'id': 'presses'}
 
 def increment_count(event,context):
 	#update count
