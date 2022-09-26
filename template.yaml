@@ -213,7 +213,7 @@ Resources:
     Properties:
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: joevay-button-press-count
+            TableName: joevay-button-press-record
       CodeUri: put_press_record/
       Handler: put_press_record.create_press_record
       Runtime: python3.8

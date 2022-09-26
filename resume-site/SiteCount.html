@@ -27,8 +27,8 @@
 			function incrementCountFunction() {
 				fetch('https://ax5xbg2mnk.execute-api.us-east-1.amazonaws.com/Prod/site/PutButtonCount') <!-- dont hard code-->
 				.then(response => response.json())
-				.then((data) => {document.getElementById('currentCountVal').innerText = data.count}
-				)
+				.then((data) => {document.getElementById('currentCountVal').innerText = data.count})
+				fetch('https://ax5xbg2mnk.execute-api.us-east-1.amazonaws.com/Prod/site/PutPressRecord')
 			}
 		</script> 
 	</head>
